@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from ortools.constraint_solver import pywrapcp
 from ortools.constraint_solver import routing_enums_pb2
 from flask_cors import CORS
+import os
 
 app = Flask(__name__)
 CORS(app)
@@ -65,5 +66,8 @@ def optimize_waypoints():
     sorted_waypoints = calculate_optimal_waypoints(waypoints)
     return jsonify({'waypoints': sorted_waypoints})
 
+debug_mode = os.getenv("DEBUG", "false").lower() == "true"
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.getenv("PORT", 5000))
+    app.run(host='0.0.0.0', port=port, debug=debug_mode)
